@@ -108,12 +108,15 @@ const list = new ListTemplate(ul);
 form.addEventListener("submit", (e: Event) => {
   e.preventDefault();
 
+  let values: [string, string, number];
+  values = [toFrom.value, details.value, amount.valueAsNumber];
+
   let doc: HasFormatter;
 
   if (type.value === "invoice") {
-    doc = new Invoice(toFrom.value, details.value, amount.valueAsNumber);
+    doc = new Invoice(...values);
   } else {
-    doc = new Payment(toFrom.value, details.value, amount.valueAsNumber);
+    doc = new Payment(...values);
   }
 
   // console.log(type.value, toFrom.value, details.value, amount.valueAsNumber);
@@ -121,3 +124,78 @@ form.addEventListener("submit", (e: Event) => {
 
   list.render(doc, type.value, "end");
 });
+
+//  tuples
+let arr = ["ryu", 24, true];
+arr[0] = false;
+arr[1] = "yoshi";
+arr = [30, false, "yoshi"];
+
+let tup: [string, number, boolean] = ["roshi", 40, true];
+tup[0] = "alvin";
+tup[1] = 24;
+
+let student: [string, number];
+student = ["eugene", 11185];
+
+// GENERICS
+
+const addUID = <T extends { name: string }>(obj: T) => {
+  let uid = Math.floor(Math.random() * 100);
+  return { ...obj, uid };
+};
+
+let docOne = addUID({ name: "yoshi", age: 40 });
+
+console.log(docOne);
+
+// // // with interfaces
+// interface Resource<T> {
+//   uid: number;
+//   resourceName: string;
+//   data: T;
+// }
+
+// const docThree: Resource<object> = {
+//   uid: 1,
+//   resourceName: "person",
+//   data: { name: "Alvin" },
+// };
+
+// const docFour: Resource<string[]> = {
+//   uid: 2,
+//   resourceName: "shoppingList",
+//   data: ["bread", "milk", "eggs"],
+// };
+
+// console.log(docThree, docFour);
+
+// ENUMS
+
+enum ResourceType {
+  BOOK,
+  AUTHOR,
+  FILM,
+  DIRECTOR,
+  PERSON,
+}
+
+interface Resource<T> {
+  uid: number;
+  resourceType: number;
+  data: T;
+}
+
+const docThree: Resource<object> = {
+  uid: 1,
+  resourceType: ResourceType.BOOK,
+  data: { title: "name of the wind" },
+};
+
+const docFour: Resource<object> = {
+  uid: 10,
+  resourceType: ResourceType.PERSON,
+  data: { name: "yoshi" },
+};
+
+console.log(docThree, docFour);
